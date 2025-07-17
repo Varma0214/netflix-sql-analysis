@@ -1,0 +1,129 @@
+-- 1. Count the number of Movies vs TV Shows
+SELECT TYPE_OF_SHOW, COUNT(*) AS TOTAL_COUNT
+FROM NETFLIX_DATASET
+GROUP BY TYPE_OF_SHOW;
+
+-- 2. Find the top 5 countries with the most content on Netflix
+SELECT COUNTRY, COUNT(*) AS TOTAL_COUNT
+FROM NETFLIX_DATASET
+GROUP BY COUNTRY
+ORDER BY TOTAL_COUNT DESC
+LIMIT 5;
+
+-- 3. List all the Movies that are Documentaries
+SELECT TITLE
+FROM NETFLIX_DATASET
+WHERE TYPE_OF_SHOW LIKE 'Movie%' AND CATEGORY_OF_MOVIE LIKE '%Documentaries%';
+
+-- 4. Identify the longest Movie
+SELECT TITLE, CAST(REPLACE(DURATION, ' min', '') AS UNSIGNED) AS DURATION, TYPE_OF_SHOW
+FROM NETFLIX_DATASET
+WHERE TYPE_OF_SHOW LIKE 'Movie%'
+ORDER BY DURATION DESC
+LIMIT 1;
+
+-- 5. Identify the shortest Movie
+SELECT TITLE, CAST(REPLACE(DURATION, ' min', '') AS UNSIGNED) AS DURATION, TYPE_OF_SHOW
+FROM NETFLIX_DATASET
+WHERE TYPE_OF_SHOW LIKE 'Movie%'
+ORDER BY DURATION ASC
+LIMIT 1;
+
+-- 6. Count the number of content items in each genre
+SELECT CATEGORY_OF_MOVIE, COUNT(*)
+FROM NETFLIX_DATASET
+GROUP BY CATEGORY_OF_MOVIE;
+
+-- 7. List all Movies released in a specific year (2006)
+SELECT TITLE
+FROM NETFLIX_DATASET
+WHERE TYPE_OF_SHOW LIKE 'Movie%' AND RELEASED_YEAR = '2006';
+
+-- 8. Find content added in the last 6 years
+SELECT TITLE
+FROM NETFLIX_DATASET
+WHERE YEAR(CURDATE()) - YEAR(STR_TO_DATE(DATE_ADDED, '%M %d,%Y')) <= 6;
+
+-- 9. Find all Movies/TV Shows directed by 'Rajiv Chilaka'
+SELECT *
+FROM NETFLIX_DATASET
+WHERE DIRECTOR LIKE '%rajiv chilaka%';
+
+-- 10. List all TV Shows with more than 5 seasons
+SELECT TITLE
+FROM NETFLIX_DATASET
+WHERE TYPE_OF_SHOW LIKE '%TV Show%' AND CAST(REPLACE(DURATION, 'Season', '') AS UNSIGNED) > 5;
+
+-- 11. Find all content without a director
+SELECT *
+FROM NETFLIX_DATASET
+WHERE DIRECTOR IS NULL OR DIRECTOR = '';
+
+-- 12. Find how many Movies Salman Khan released in the last 10 years
+SELECT COUNT(*)
+FROM NETFLIX_DATASET
+WHERE CAST LIKE '%Salman Khan%' AND TYPE_OF_SHOW LIKE '%Movie%' AND RELEASED_YEAR >= YEAR(CURDATE()) - 10;
+
+-- 13. Identify Movies/TV Shows featuring actor Robert de Niro
+SELECT *
+FROM NETFLIX_DATASET
+WHERE CAST LIKE '%Robert de Niro%';
+
+-- 14. Group records by year and count number of items added each year
+SELECT RELEASED_YEAR, COUNT(*) AS TOTAL_COUNT
+FROM NETFLIX_DATASET
+GROUP BY RELEASED_YEAR
+ORDER BY RELEASED_YEAR DESC;
+
+-- 15. Find each year and average number of contents released in India on Netflix
+SELECT RELEASED_YEAR, AVG(TOTAL_COUNT)
+FROM (
+    SELECT RELEASED_YEAR, COUNT(*) AS TOTAL_COUNT
+    FROM NETFLIX_DATASET
+    WHERE COUNTRY = 'INDIA'
+    GROUP BY RELEASED_YEAR
+    ORDER BY RELEASED_YEAR DESC
+) AS YEAR_DATA
+GROUP BY RELEASED_YEAR;
+
+-- 16. Identify the top 3 most common genres
+SELECT CATEGORY_OF_MOVIE, COUNT(*) AS TOTAL_COUNT
+FROM NETFLIX_DATASET
+GROUP BY CATEGORY_OF_MOVIE
+ORDER BY TOTAL_COUNT DESC
+LIMIT 3;
+
+-- 17. Identify the most active month for adding content
+SELECT *
+FROM (
+    SELECT MONTH(STR_TO_DATE(DATE_ADDED, '%M %d,%Y')) AS MONTH, COUNT(*) AS TOTAL_COUNT
+    FROM NETFLIX_DATASET
+    GROUP BY MONTH
+    ORDER BY TOTAL_COUNT DESC
+) AS RESULT
+WHERE MONTH IS NOT NULL
+LIMIT 1;
+
+-- 18. Compare number of Movies and TV Shows before and after 2015
+SELECT 
+    CASE 
+        WHEN RELEASED_YEAR < 2015 THEN 'BEFORE2015' 
+        ELSE 'AFTER2015' 
+    END AS PERIOD, 
+    TYPE_OF_SHOW,
+    COUNT(*) AS TOTAL_COUNT
+FROM NETFLIX_DATASET
+GROUP BY PERIOD, TYPE_OF_SHOW;
+
+-- 19. Retrieve all Movies/TV Shows added in the last 6 months
+SELECT *
+FROM NETFLIX_DATASET
+WHERE STR_TO_DATE(DATE_ADDED, '%M %d,%Y') >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH);
+
+-- 20. Find average duration of all Movies (in minutes)
+SELECT AVG(MINUTES)
+FROM (
+    SELECT CAST(REPLACE(DURATION, 'min', '') AS UNSIGNED) AS MINUTES
+    FROM NETFLIX_DATASET
+    WHERE TYPE_OF_SHOW LIKE '%Movie%'
+) AS RESULT;
