@@ -3,8 +3,16 @@
 This project contains a set of SQL queries that provide insights into the Netflix dataset. It includes analysis on genres, durations, countries, directors, actors, and more.
 
 
-<pre><code>## 📁 Project Structure ``` netflix-sql-analysis/ ├── create_table.sql # SQL script to create the table ├── load_data.sql # SQL script to load data into the table ├── queries.sql # All analysis SQL queries └── README.md # Project documentation ``` </code></pre>
-## 📌 Dataset Assumption
+## 📁 Project Structure
+
+```
+netflix-sql-analysis/
+├── create_table.sql   # SQL script to create the table
+├── load_data.sql      # SQL script to load data into the table
+├── queries.sql        # All analysis SQL queries
+└── README.md          # Project documentation
+```
+
 
 The dataset used is named `NETFLIX_DATASET` and contains columns like:
 - `TYPE_OF_SHOW`
